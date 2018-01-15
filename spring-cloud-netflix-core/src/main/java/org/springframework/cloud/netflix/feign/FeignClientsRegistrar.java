@@ -17,7 +17,6 @@
 package org.springframework.cloud.netflix.feign;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,7 +35,6 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -62,14 +60,12 @@ import org.springframework.util.StringUtils;
  * @author Gang Li
  */
 class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar,
-		ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {
+		ResourceLoaderAware, EnvironmentAware {
 
 	// patterned after Spring Integration IntegrationComponentScanRegistrar
 	// and RibbonClientsConfigurationRegistgrar
 
 	private ResourceLoader resourceLoader;
-
-	private ClassLoader classLoader;
 
 	private Environment environment;
 
@@ -79,11 +75,6 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar,
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
-	}
-
-	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
 	}
 
 	@Override
@@ -208,6 +199,14 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar,
 		AnnotationAttributes annotation = AnnotationAttributes.fromMap(attributes);
 		// This blows up if an aliased property is overspecified
 		// FIXME annotation.getAliasedString("name", FeignClient.class, null);
+		Assert.isTrue(
+			!annotation.getClass("fallback").isInterface(),
+			"Fallback class must implement the interface annotated by @FeignClient"
+		);
+		Assert.isTrue(
+			!annotation.getClass("fallbackFactory").isInterface(),
+			"Fallback factory must produce instances of fallback classes that implement the interface annotated by @FeignClient"
+		);
 	}
 
 	/* for testing */ String getName(Map<String, Object> attributes) {
@@ -380,8 +379,7 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar,
 		 * @param delegates must not be {@literal null}.
 		 */
 		public AllTypeFilter(List<TypeFilter> delegates) {
-
-			Assert.notNull(delegates);
+			Assert.notNull(delegates, "This argument is required, it must not be null");
 			this.delegates = delegates;
 		}
 
