@@ -144,6 +144,16 @@
 		<module>spring-cloud-starter-zuul</module>
 		<module>docs</module>
 	</modules>
+	<distributionManagement>
+		<repository>
+			<id>artifactory</id>
+			<url>http://maven.sfbest.com/artifactory/simple/libs-release-local/</url>
+		</repository>
+		<snapshotRepository>
+			<id>artifactory</id>
+			<url>http://maven.sfbest.com/artifactory/simple/libs-snapshot-local/</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<profiles>
 		<profile>
 			<id>spring</id>
@@ -249,4 +259,6 @@
 			</build>
 		</profile>
 	</profiles>
+
+
 </project>
