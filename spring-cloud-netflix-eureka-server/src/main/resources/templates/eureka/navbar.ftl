@@ -24,6 +24,14 @@
         <td>Data center</td>
         <td>${datacenter!}</td>
       </tr>
+      <tr>
+          <td>Total Of Application</td>
+          <td>${totalApp!}</td>
+      </tr>
+      <tr>
+          <td>Total Of Instance</td>
+          <td>${totalInstance!}</td>
+      </tr>
     </table>
   </div>
   <div class="col-md-6">
