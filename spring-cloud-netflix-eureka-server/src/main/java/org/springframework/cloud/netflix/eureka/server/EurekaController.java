@@ -26,6 +26,7 @@ import com.netflix.eureka.EurekaServerContextHolder;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.netflix.eureka.EurekaConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -177,6 +178,9 @@ public class EurekaController {
             try {
                 URI uri = new URI(node.getServiceUrl());
                 String href = scrubBasicAuth(node.getServiceUrl());
+//                if(href)
+                href=  href.replace(EurekaConstants.DEFAULT_PREFIX,"");
+
                 replicas.put(uri.getHost(), href);
             } catch (Exception ex) {
                 // ignore?
