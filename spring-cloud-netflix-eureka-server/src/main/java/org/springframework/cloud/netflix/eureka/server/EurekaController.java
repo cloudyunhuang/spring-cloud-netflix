@@ -89,20 +89,25 @@ public class EurekaController {
         }
         Map<String, String> providerMap = Collections.emptyMap();
         Map<String, String> consumerMap = Collections.emptyMap();
+        Map<String, List<String>> providerMethodMap = Collections.emptyMap();
+        Map<String, List<String>> consumerMethodMap = Collections.emptyMap();
         if (instanceInfo != null) {
             Map<String, String> metadata = instanceInfo.getMetadata();
             RegisterMetadata registerMetadata = new RegisterMetadata(metadata);
             providerMap = registerMetadata.toProviderMap();
-            model.put("contextPath", providerMap.get(CONTEXT_PATH_KEY));
+            model.put("contextPath", registerMetadata.contextPathGet());
             providerMap.remove(CONTEXT_PATH_KEY);
             consumerMap = registerMetadata.toConsumerMap();
             model.put("appName", instanceInfo.getAppName());
-            model.put("ip",instanceInfo.getIPAddr());
+            model.put("ip", instanceInfo.getIPAddr());
+            providerMethodMap = registerMetadata.toProviderMethodMap();
+            consumerMethodMap = registerMetadata.toConsumerMethodMap();
         }
         model.put("providerMap", providerMap);
         model.put("consumerMap", consumerMap);
+        model.put("providerMethodMap", providerMethodMap);
+        model.put("consumerMethodMap", consumerMethodMap);
         model.put("id", id);
-
         return "eureka/detail";
     }
 
@@ -179,7 +184,7 @@ public class EurekaController {
                 URI uri = new URI(node.getServiceUrl());
                 String href = scrubBasicAuth(node.getServiceUrl());
 //                if(href)
-                href=  href.replace(EurekaConstants.DEFAULT_PREFIX,"");
+                href = href.replace(EurekaConstants.DEFAULT_PREFIX, "");
 
                 replicas.put(uri.getHost(), href);
             } catch (Exception ex) {
@@ -197,11 +202,11 @@ public class EurekaController {
         totalApp = sortedApplications.size();
         model.put("totalApp", totalApp);
         for (Application app : sortedApplications) {
-            if(app.getInstances() != null){
-                totalInstance+=app.getInstances().size();
+            if (app.getInstances() != null) {
+                totalInstance += app.getInstances().size();
             }
         }
-        model.put("totalInstance",totalInstance);
+        model.put("totalInstance", totalInstance);
         ArrayList<Map<String, Object>> apps = new ArrayList<>();
         for (Application app : sortedApplications) {
             LinkedHashMap<String, Object> appData = new LinkedHashMap<>();

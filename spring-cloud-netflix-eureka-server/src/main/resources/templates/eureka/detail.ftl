@@ -26,16 +26,28 @@
         <thead>
         <tr>
             <th>ClassName</th>
+            <th>Method</th>
             <th>Path</th>
         </tr>
         </thead>
         <tbody>
-        <#list providerMap?keys as key>
-        <tr>
-            <td>${key}</td>
-            <td>${providerMap[key]!""}</td>
-        </tr>
-        </#list>
+        <#if providerMap??>
+            <#list providerMap?keys as key>
+            <tr>
+                <td>${key!""}</td>
+                <td>
+                    <#if providerMethodMap??>
+                        <#if providerMethodMap[key]??>
+                            <#list providerMethodMap[key] as method>
+                            ${method!""}<br>
+                            </#list>
+                        </#if>
+                    </#if>
+                </td>
+                <td>${providerMap[key]!""}</td>
+            </tr>
+            </#list>
+        </#if>
         </tbody>
     </table>
     <h1>Consumer List</h1>
@@ -43,16 +55,29 @@
         <thead>
         <tr>
             <th>ClassName</th>
+            <th>Method</th>
             <th>Path</th>
+
         </tr>
         </thead>
         <tbody>
-        <#list consumerMap?keys as key>
-        <tr>
-            <td>${key}</td>
-            <td>${consumerMap[key]!""}</td>
-        </tr>
-        </#list>
+        <#if consumerMap??>
+            <#list consumerMap?keys as key>
+            <tr>
+                <td>${key!""}</td>
+                <td>
+                    <#if consumerMethodMap??>
+                        <#if consumerMethodMap[key]??>
+                            <#list consumerMethodMap[key] as method>
+                            ${method!""}<br>
+                            </#list>
+                        </#if>
+                    </#if>
+                </td>
+                <td>${consumerMap[key]!""}</td>
+            </tr>
+            </#list>
+        </#if>
         </tbody>
     </table>
 </div>
